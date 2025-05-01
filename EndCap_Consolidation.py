@@ -129,8 +129,8 @@ st.title("Storage Type Filter")
 
 # File uploaders
 st.header("Upload Files")
-endcaps_file = st.file_uploader("Endcaps File", type=["xlsx"])
-open_space_file = st.file_uploader("Open Space File", type=["xlsx"])
+endcaps_file = st.file_uploader("Endcaps File", type=["xlsx", "XLSX"])  # Added uppercase
+open_space_file = st.file_uploader("Open Space File", type=["xlsx", "XLSX"])  # Added uppercase
 
 # Storage type selection
 st.header("Select Storage Types to Filter")
