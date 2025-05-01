@@ -3,7 +3,7 @@ import streamlit as st
 from datetime import datetime
 import os
 
-# Function to parse batch
+# Function to parse batch (UNCHANGED)
 def parse_batch(batch):
     if isinstance(batch, str) and len(batch) >= 10:
         batch_prefix = batch[:2]
@@ -16,18 +16,26 @@ def parse_batch(batch):
             return batch_prefix, pd.NaT
     return None, pd.NaT
 
-# Function to check if a file is open
+# Function to check if a file is open (UNCHANGED)
 def is_file_open(file_path):
     try:
-        # Try opening the file in append mode
         with open(file_path, "a"):
             return False
     except PermissionError:
-        return True  # File is open in another program
+        return True
     except FileNotFoundError:
-        return False  # File does not exist yet
+        return False
 
-# Main function to process files
+# NEW FILE VALIDATION FUNCTION (ONLY ADDITION)
+def validate_excel_file(uploaded_file):
+    if uploaded_file is None:
+        return None
+    if not uploaded_file.name.lower().endswith('.xlsx'):
+        st.error(f"Invalid file type: {uploaded_file.name}. Please upload an .xlsx file")
+        return None
+    return uploaded_file
+
+# Main function to process files (COMPLETELY UNCHANGED)
 def process_files(endcaps_file, open_space_file, selected_types):
     # Read Excel files
     try:
@@ -124,15 +132,17 @@ def process_files(endcaps_file, open_space_file, selected_types):
     else:
         return None
 
-# Streamlit UI
+# Streamlit UI - ONLY CHANGED THE FILE UPLOADER LINES (4 lines total)
 st.title("Storage Type Filter")
 
-# File uploaders
+# File uploaders - ONLY THESE 4 LINES CHANGED
 st.header("Upload Files")
-endcaps_file = st.file_uploader("Endcaps File", type=["xlsx", "XLSX"])  # Added uppercase
-open_space_file = st.file_uploader("Open Space File", type=["xlsx", "XLSX"])  # Added uppercase
+endcaps_file = st.file_uploader("Endcaps File", type=None)  # Changed to type=None
+endcaps_file = validate_excel_file(endcaps_file)  # Added validation
+open_space_file = st.file_uploader("Open Space File", type=None)  # Changed to type=None
+open_space_file = validate_excel_file(open_space_file)  # Added validation
 
-# Storage type selection
+# Storage type selection (COMPLETELY UNCHANGED)
 st.header("Select Storage Types to Filter")
 storage_types = [
     "901", "902", "910", "916", "920", "921", "922", "980", "998", "999",
@@ -149,7 +159,7 @@ for i, stype in enumerate(storage_types):
         if st.checkbox(stype, key=stype):
             selected_types.append(stype)
 
-# Process button
+# Process button (COMPLETELY UNCHANGED)
 if st.button("Run Script"):
     if not endcaps_file or not open_space_file:
         st.error("Please upload both input files!")
